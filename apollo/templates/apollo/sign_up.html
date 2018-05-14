@@ -9,6 +9,9 @@
         {{ field }}
       </div>
     {% endfor %}
+    <div>
+      {{ error }}
+    </div>
     <button type="submit">Sign up</button>
     <p>Already have an account? <a href="{% url 'apollo:log_in' %}">Log in!</a></p>
   </form>

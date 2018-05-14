@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
+import json
+from apollo.models import *
 
 User = get_user_model()
 # Create your views here.
@@ -35,7 +37,9 @@ def sign_up(request):
         form = UserCreationForm(data=request.POST)
         if form.is_valid():
             form.save()
+            p = Player(name=request.POST['username'])
+            p.save()
             return redirect(reverse('apollo:log_in'))
         else:
-            print(form.errors)
-    return render(request, 'apollo/sign_up.html', {'form': form})
+            render(request, 'apollo/sign_up.html', {'error': form.errors, 'form': form})
+    return render(request, 'apollo/sign_up.html', {'error': form.errors, 'form': form})

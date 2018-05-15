@@ -13,6 +13,7 @@ def ws_connect(message):
     word_options = get_word_options(starter_word)
     message.channel_session['word_path'] = []
     message.channel_session['username'] = message.user.username
+    message.channel_session['current_target_word'] = get_target_word()
     p = Player.objects.get(name=message.channel_session['username'])
     p.is_logged_in = True
     p.save()
@@ -38,12 +39,15 @@ def ws_receive(message):
 	data = json.loads(message['text'])
 	clicked_word = data['word']
 	message.channel_session['word_path'].append(clicked_word)
-	
-	word_options = get_word_options(clicked_word)
 	username = message.channel_session['username']
 	# import pdb; pdb.set_trace()
 	current_target_word = get_target_word()
-	if (clicked_word == current_target_word):
+    last_target_word = message.channel_session['current_target_word']
+    if last_target_word != current_target_word:
+        message.channel_session['word_path'] = [] 
+    word_options = get_word_options(clicked_word, message.channel_session['word_path'])
+    message.channel_session['current_target_word'] = current_target_word
+    if (clicked_word == current_target_word):
 		new_target_word = set_target_word(current_target_word)
 		p = Player.objects.get(name=username)
 		p.points = p.points + len(Player.objects.filter(is_logged_in=True))

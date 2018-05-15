@@ -1,10 +1,16 @@
 # Helper functions and settings
 from apollo.models import *
 import random
+from nltk.stem import WordNetLemmatizer
+from gensim.models import KeyedVectors
 
-STARTER_WORDS = ['cat', 'man', 'pillow', 'building', 'helicopter', 'plane', 'dog']
-TARGET_WORDS = ['cat', 'man', 'pillow', 'building', 'helicopter', 'plane', 'dog']
+wordnet_lemmatizer = WordNetLemmatizer()
 
+STARTER_WORDS = ['cat', 'man', 'building', 'helicopter', 'plane', 'dog']
+TARGET_WORDS = ['house', 'Obama',  'garden', 'garbage', 'light', 'Frost']
+
+filename = 'C:/Users/ys16219/Downloads/GoogleNews-vectors-negative300.bin'
+model = KeyedVectors.load_word2vec_format(filename, unicode_errors = 'replace', binary = 'True')
 
 def get_target_word():	
 	return str(TargetWord.objects.latest('datetime').word)
@@ -12,9 +18,18 @@ def get_target_word():
 def get_starter_word():
 	return random.choice(STARTER_WORDS)
 
-def get_word_options(word):
+def f7(seq):
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (wordnet_lemmatizer.lemmatize(x.lower()) in seen or seen_add(wordnet_lemmatizer.lemmatize(x.lower())))]
+
+def get_word_options(word, pre_used_words):
 	# Use word2vec to send 4 closest words to 'word'
-	return [random.choice(STARTER_WORDS), random.choice(STARTER_WORDS), random.choice(STARTER_WORDS), random.choice(STARTER_WORDS)]
+    w = [i[0] for i in model.most_similar(word,topn=50) if "_" not in i[0]]
+    w = [i for i in w if (i.lower() not in pre_used_words and wordnet_lemmatizer.lemmatize(i) not in pre_used_words)]
+    w = f7(w)
+    return w[:4]
+	#return [random.choice(STARTER_WORDS), random.choice(STARTER_WORDS), random.choice(STARTER_WORDS), random.choice(STARTER_WORDS)]
 
 def get_leaderboard():
 	leaderboard = []

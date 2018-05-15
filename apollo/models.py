@@ -17,6 +17,8 @@ class Player(models.Model):
 
 class TargetWord(models.Model):
 	word = models.CharField(max_length=30)
+	completed_in = models.IntegerField(default=0)
+	completed_from = models.CharField(max_length=30)
 	datetime = models.DateTimeField(default=timezone.now, db_index=True)
 
 	def __str__(self):

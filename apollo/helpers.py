@@ -3,20 +3,24 @@ from apollo.models import *
 import random
 from nltk.stem import WordNetLemmatizer
 from gensim.models import KeyedVectors
+from tir.settings import MODEL_PATH
 
 wordnet_lemmatizer = WordNetLemmatizer()
 
 STARTER_WORDS = ['cat', 'man', 'building', 'helicopter', 'plane', 'dog']
 TARGET_WORDS = ['house', 'Obama',  'garden', 'garbage', 'light', 'Frost']
 
-filename = 'C:/Users/ys16219/Downloads/GoogleNews-vectors-negative300.bin'
-model = KeyedVectors.load_word2vec_format(filename, unicode_errors = 'replace', binary = 'True')
+model = KeyedVectors.load_word2vec_format(MODEL_PATH, unicode_errors = 'replace', binary = 'True', limit=10000)
 
 def get_target_word():	
 	return str(TargetWord.objects.latest('datetime').word)
 
-def get_starter_word():
-	return random.choice(STARTER_WORDS)
+def get_previous_target_word_details():
+	return TargetWord.objects.order_by('-datetime')[1].word, TargetWord.objects.order_by('-datetime')[1].completed_from, TargetWord.objects.order_by('-datetime')[1].completed_in
+
+def get_starter_words():
+	random.shuffle(STARTER_WORDS)
+	return STARTER_WORDS[:4]
 
 def f7(seq):
     seen = set()

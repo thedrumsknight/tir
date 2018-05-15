@@ -6,6 +6,9 @@
   <div id="targetWord"> If you see this text, on connect consumer is not working. </div>
   <div id="activeUsers"></div>
 	<div id="wordOptions"></div>
+	<div id="previousTargetWord"></div>
+	<div id="completedIn"></div>
+	<div id="completedFrom"></div>
 	<br>
 	<table id="leaderboard"></table>
 {% endblock content %}
@@ -25,6 +28,18 @@
       // Update target word
       if (data['targetWord']) {
       	$('#targetWord')[0].innerHTML = String(data['targetWord']);
+      }
+
+      if (data['completedFrom']) {
+      	$('#completedFrom')[0].innerHTML = String(data['completedFrom']);
+      }
+
+      if (data['completedIn']) {
+      	$('#completedIn')[0].innerHTML = String(data['completedIn']);
+      }
+
+      if (data['previousTargetWord']) {
+      	$('#previousTargetWord')[0].innerHTML = String(data['previousTargetWord']);
       }
 
       // Update active users

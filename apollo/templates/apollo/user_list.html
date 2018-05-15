@@ -2,40 +2,62 @@
 
 {% block content %}
   <a href="{% url 'apollo:log_out' %}">Log out</a>
-  <br>
-  <ul>
-    {% for user in users %}
-      <!-- NOTE: We escape HTML to prevent XSS attacks. -->
-      <li data-username="{{ user.username|escape }}">
-        {{ user.username|escape }}: {{ user.status|default:'Offline' }}
-      </li>
-    {% endfor %}
-  </ul>
+  <br><br>
+  <div id="targetWord"> If you see this text, on connect consumer is not working. </div>
+  <div id="activeUsers"></div>
+	<div id="wordOptions"></div>
+	<br>
+	<table id="leaderboard"></table>
 {% endblock content %}
+
 
 {% block script %}
   <script>
     var socket = new WebSocket('ws://' + window.location.host + '/users/');
 
-    socket.onopen = function open() {
+    socket.onopen = function open(evt) {
       console.log('WebSockets connection created.');
     };
 
     socket.onmessage = function message(event) {
       var data = JSON.parse(event.data);
-      // NOTE: We escape JavaScript to prevent XSS attacks.
-      var username = encodeURI(data['username']);
-      var user = $('li').filter(function () {
-        return $(this).data('username') == username;
-      });
 
-      if (data['is_logged_in']) {
-        user.html(username + ': Online');
+      // Update target word
+      if (data['targetWord']) {
+      	$('#targetWord')[0].innerHTML = String(data['targetWord']);
       }
-      else {
-        user.html(username + ': Offline');
+
+      // Update active users
+      if (data['activeUsers']) {
+      	$('#activeUsers')[0].innerHTML = String(data['activeUsers']);
+      }
+
+      // Update word options
+      if (data['wordOptions']) {
+      	for (var i = data['wordOptions'].length - 1; i >= 0; i--) {
+      		$('#wordOptions').append(
+      		'<button type="button" class="optionButton" onclick="wordClick(value)" value=' + String(data['wordOptions'][i]) + '>' + String(data['wordOptions'][i]) + '</button>'
+      		);	
+      	}
+      }
+
+      // Update leaderboard
+      if (data['leaderboard']) {
+      	console.log(data['leaderboard']);
+      	for (var i = data['leaderboard'].length - 1; i >= 0; i--) {
+      		$('#leaderboard').append(
+      		'<tr><td>'+ data['leaderboard'][i]['name'] +'</td><td>'+ data['leaderboard'][i]['points'] + '</td></tr>'
+      		);	
+      	}
       }
     };
+
+    function wordClick(value) {
+    	var message = {
+    		'word': value,
+    	}
+    	socket.send(JSON.stringify(message));
+    }
 
     if (socket.readyState == WebSocket.OPEN) {
       socket.onopen();

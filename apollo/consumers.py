@@ -52,11 +52,14 @@ def ws_receive(message):
 		Group('users').send({
 			'text': json.dumps({
 				'targetWord': new_target_word,
-				'wordOptions': word_options,
-				'leaderboard': leaderboard
-
+				'leaderboard': leaderboard,
 			})
 		})
+	message.reply_channel.send({
+		'text': json.dumps({
+			'wordOptions': word_options,
+		})
+	})
 
 
 

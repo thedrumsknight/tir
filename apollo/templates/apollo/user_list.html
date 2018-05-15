@@ -34,6 +34,7 @@
 
       // Update word options
       if (data['wordOptions']) {
+      	$('#wordOptions')[0].innerHTML = '';
       	for (var i = data['wordOptions'].length - 1; i >= 0; i--) {
       		$('#wordOptions').append(
       		'<button type="button" class="optionButton" onclick="wordClick(value)" value=' + String(data['wordOptions'][i]) + '>' + String(data['wordOptions'][i]) + '</button>'
@@ -43,7 +44,7 @@
 
       // Update leaderboard
       if (data['leaderboard']) {
-      	console.log(data['leaderboard']);
+      	$('#leaderboard')[0].innerHTML = '';
       	for (var i = data['leaderboard'].length - 1; i >= 0; i--) {
       		$('#leaderboard').append(
       		'<tr><td>'+ data['leaderboard'][i]['name'] +'</td><td>'+ data['leaderboard'][i]['points'] + '</td></tr>'

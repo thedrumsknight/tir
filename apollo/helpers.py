@@ -2,7 +2,8 @@
 from apollo.models import *
 import random
 
-STARTER_WORDS = ['cat', 'man', 'pillow', 'building', 'helicopter', 'plane']
+STARTER_WORDS = ['cat', 'man', 'pillow', 'building', 'helicopter', 'plane', 'dog']
+TARGET_WORDS = ['cat', 'man', 'pillow', 'building', 'helicopter', 'plane', 'dog']
 
 
 def get_target_word():	
@@ -24,3 +25,10 @@ def get_leaderboard():
 			'points': player.points
 		})
 	return leaderboard
+
+def set_target_word(previous_target):
+	word = random.choice(TARGET_WORDS)
+	while (word == previous_target):
+		word = random.choice(TARGET_WORDS)
+	TargetWord.objects.create(word=word)
+	return word

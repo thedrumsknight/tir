@@ -29,7 +29,7 @@ def f7(seq):
 
 def get_word_options(word, pre_used_words):
 	# Use word2vec to send 4 closest words to 'word'
-    w = [i[0] for i in model.most_similar(word,topn=50) if "_" not in i[0]]
+    w = [i[0] for i in model.most_similar(word,topn=40) if "_" not in i[0]]
     w = [i for i in w if (i.lower() not in pre_used_words and wordnet_lemmatizer.lemmatize(i) not in pre_used_words)]
     w = f7(w)
     return w[:4]

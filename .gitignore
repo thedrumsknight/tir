@@ -1,7 +1,7 @@
 # User-defined
 .vscode
 .ipynb_checkpoints
-# *.rdb
+*.rdb
 
 # Model Location
 apollo/w2v/*

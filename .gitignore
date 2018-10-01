@@ -2,6 +2,7 @@
 .vscode
 .ipynb_checkpoints
 *.rdb
+slim_model*
 
 # Model Location
 apollo/w2v/*

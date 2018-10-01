@@ -2,15 +2,12 @@
 from apollo.models import *
 import random
 from nltk.stem import WordNetLemmatizer
-from gensim.models import KeyedVectors
-from tir.settings import MODEL_PATH
+from tir.settings import MODEL_PATH, MODEL
 
 wordnet_lemmatizer = WordNetLemmatizer()
 
 STARTER_WORDS = ['cat', 'man', 'building', 'helicopter', 'plane', 'dog']
 TARGET_WORDS = ['house', 'Obama',  'garden', 'garbage', 'light', 'Frost']
-
-model = KeyedVectors.load_word2vec_format(MODEL_PATH, unicode_errors = 'replace', binary = 'True', limit=10000)
 
 def get_target_word():	
 	return str(TargetWord.objects.latest('datetime').word)
@@ -29,7 +26,7 @@ def f7(seq):
 
 def get_word_options(word, pre_used_words):
 	# Use word2vec to send 4 closest words to 'word'
-    w = [i[0] for i in model.most_similar(word,topn=40) if "_" not in i[0]]
+    w = [i[0] for i in MODEL.most_similar(word,topn=40) if "_" not in i[0]]
     w = [i for i in w if (i.lower() not in pre_used_words and wordnet_lemmatizer.lemmatize(i) not in pre_used_words)]
     w = f7(w)
     return w[:4]
